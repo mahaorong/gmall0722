@@ -12,10 +12,12 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SearchServiceImpl implements SearchService {
@@ -37,12 +39,17 @@ public class SearchServiceImpl implements SearchService {
         try {
             // 执行，返回结果
             SearchResult searchResult = jestClient.execute(build);
-
-            List<SearchResult.Hit<PmsSearchSkuInfo, Void>> hits = searchResult.getHits(PmsSearchSkuInfo.class);
-
-            for (SearchResult.Hit<PmsSearchSkuInfo, Void> hit : hits) {
-                PmsSearchSkuInfo source = hit.source;
-                pmsSearchSkuInfos.add(source);
+            if(searchResult != null) {
+                List<SearchResult.Hit<PmsSearchSkuInfo, Void>> hits = searchResult.getHits(PmsSearchSkuInfo.class);
+                if(hits != null) {
+                    for (SearchResult.Hit<PmsSearchSkuInfo, Void> hit : hits) {
+                        PmsSearchSkuInfo source = hit.source;
+                        Map<String, List<String>> highlight = hit.highlight;
+                        String skuName = highlight.get("skuName").get(0);
+                        source.setSkuName(skuName);
+                        pmsSearchSkuInfos.add(source);
+                    }
+                }
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -73,6 +80,13 @@ public class SearchServiceImpl implements SearchService {
             // 搜索
             MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("skuName",keyword);
             boolQueryBuilder.must(matchQueryBuilder);
+
+            // 高亮
+            HighlightBuilder highlightBuilder = new HighlightBuilder();
+            highlightBuilder.field("skuName");
+            highlightBuilder.preTags("<span>");
+            highlightBuilder.postTags("</span>");
+            searchSourceBuilder.highlight(highlightBuilder);
         }
 
         if(valueId != null && valueId.length > 0) {

@@ -1,5 +1,7 @@
 package com.atguigu.gmall.bean;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.io.Serializable;
@@ -9,6 +11,7 @@ import java.util.Date;
 public class OmsCartItem implements Serializable{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String productId;
     private String productSkuId;

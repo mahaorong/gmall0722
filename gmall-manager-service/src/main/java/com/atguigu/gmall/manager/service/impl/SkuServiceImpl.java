@@ -152,4 +152,11 @@ public class SkuServiceImpl implements SkuService {
         return pmsSkuInfos;
     }
 
+    @Override
+    public PmsSkuInfo getSkuById(String skuId) {
+        PmsSkuInfo pmsSkuInfo = new PmsSkuInfo();
+        pmsSkuInfo.setId(skuId);
+        return pmsSkuInfoMapper.selectOne(pmsSkuInfo);
+    }
+
 }

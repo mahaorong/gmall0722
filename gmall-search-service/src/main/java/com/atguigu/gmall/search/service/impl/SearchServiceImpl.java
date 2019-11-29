@@ -39,9 +39,9 @@ public class SearchServiceImpl implements SearchService {
         try {
             // 执行，返回结果
             SearchResult searchResult = jestClient.execute(build);
-            if(searchResult != null) {
+            if (searchResult != null) {
                 List<SearchResult.Hit<PmsSearchSkuInfo, Void>> hits = searchResult.getHits(PmsSearchSkuInfo.class);
-                if(hits != null) {
+                if (hits != null) {
                     for (SearchResult.Hit<PmsSearchSkuInfo, Void> hit : hits) {
                         PmsSearchSkuInfo source = hit.source;
                         Map<String, List<String>> highlight = hit.highlight;
@@ -51,7 +51,7 @@ public class SearchServiceImpl implements SearchService {
                     }
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return pmsSearchSkuInfos;
@@ -70,15 +70,15 @@ public class SearchServiceImpl implements SearchService {
 
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
-        if(StringUtils.isNotBlank(catalog3Id)) {
+        if (StringUtils.isNotBlank(catalog3Id)) {
             // 过滤
             TermQueryBuilder termQueryBuilder = new TermQueryBuilder("catalog3Id", catalog3Id);
             boolQueryBuilder.filter(termQueryBuilder);
         }
 
-        if(StringUtils.isNotBlank(keyword)) {
+        if (StringUtils.isNotBlank(keyword)) {
             // 搜索
-            MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("skuName",keyword);
+            MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("skuName", keyword);
             boolQueryBuilder.must(matchQueryBuilder);
 
             // 高亮
@@ -89,7 +89,7 @@ public class SearchServiceImpl implements SearchService {
             searchSourceBuilder.highlight(highlightBuilder);
         }
 
-        if(valueId != null && valueId.length > 0) {
+        if (valueId != null && valueId.length > 0) {
             for (String id : valueId) {
                 // 过滤
                 TermQueryBuilder termQueryBuilder = new TermQueryBuilder("skuAttrValueList.valueId", id);

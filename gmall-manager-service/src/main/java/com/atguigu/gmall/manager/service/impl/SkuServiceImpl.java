@@ -73,15 +73,15 @@ public class SkuServiceImpl implements SkuService {
         // 缓存中查询
         String skuStr = jedis.get("sku:" + skuId + ":info");
 
-        if(StringUtils.isNotBlank(skuStr)) {
+        if (StringUtils.isNotBlank(skuStr)) {
             // 缓存中有数据
             pmsSkuInfo = JSON.parseObject(skuStr, PmsSkuInfo.class);
-        }else {
+        } else {
             String lockId = UUID.randomUUID().toString();
             // 获得分布式锁
             String OK = jedis.set("sku:" + skuId + ":lock", lockId, "nx", "px", 10000);
 
-            if(StringUtils.isNotBlank(OK)&&"OK".equals(OK)) {
+            if (StringUtils.isNotBlank(OK) && "OK".equals(OK)) {
 
                 // 查询db
                 pmsSkuInfo = itemFromDb(skuId);
@@ -100,7 +100,7 @@ public class SkuServiceImpl implements SkuService {
                 String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
                 jedis.eval(script, Collections.singletonList("sku:" + skuId + ":lock"), Collections.singletonList(lockId));
 
-            }else {
+            } else {
                 // 自旋（过一定睡眠时间，重新访问方法）
                 try {
                     Thread.sleep(3000);

@@ -1,5 +1,6 @@
 package com.atguigu.gmall.search.controller;
 
+import com.atguigu.gmall.annotations.LoginRequired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 public class IndexController {
 
     @RequestMapping("/index")
+    @LoginRequired(isNeededSuccess = false)
     public String index() throws IOException, InvocationTargetException, IllegalAccessException {
 
 //        List<PmsBaseCatalog1> pmsBaseCatalog1s = catalogService.getCatalogAll();

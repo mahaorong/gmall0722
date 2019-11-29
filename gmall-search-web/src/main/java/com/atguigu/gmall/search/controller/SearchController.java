@@ -55,13 +55,14 @@ public class SearchController {
                     PmsBaseAttrInfo pmsBaseAttrInfo = iterator.next();
                     List<PmsBaseAttrValue> attrValueList = pmsBaseAttrInfo.getAttrValueList();
                     for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
-                        String id = pmsBaseAttrValue.getId();
-                        if (s.equals(id)) {
+                        if (s.equals(pmsBaseAttrValue.getId())) {
+                            // remove后取不到valueName
                             pmsSearchCrumb.setValueName(pmsBaseAttrInfo.getAttrName());
                             iterator.remove();
                         }
                     }
                 }
+                // 塞入面包屑集合
                 pmsSearchCrumbs.add(pmsSearchCrumb);
             }
             modelMap.put("attrValueSelectedList", pmsSearchCrumbs);
@@ -82,12 +83,14 @@ public class SearchController {
 //            modelMap.put("attrValueSelectList", pmsSearchCrumbs);
 //        }
 
+        modelMap.put("skuLsInfoList", pmsSearchSkuInfos);
+        // 如果只剩一个属性则不显示
+        if(pmsBaseAttrInfos != null && pmsBaseAttrInfos.size() > 1) {
+            modelMap.put("attrList", pmsBaseAttrInfos);
+        }
         // 拼接url
         String urlParam = getUrlParam(pmsSearchParam);
-
         modelMap.put("urlParam", urlParam);
-        modelMap.put("attrList", pmsBaseAttrInfos);
-        modelMap.put("skuLsInfoList", pmsSearchSkuInfos);
         return "list";
     }
 
@@ -99,28 +102,28 @@ public class SearchController {
         String catalog3Id = pmsSearchParam.getCatalog3Id();
         String[] valueId = pmsSearchParam.getValueId();
 
-        if(StringUtils.isNotBlank(keyword)) {
-            if(StringUtils.isNotBlank(urlParam)) {
+        if (StringUtils.isNotBlank(keyword)) {
+            if (StringUtils.isNotBlank(urlParam)) {
                 urlParam = urlParam + "&";
             }
             urlParam = urlParam + "keyword=" + keyword;
         }
 
-        if(StringUtils.isNotBlank(catalog3Id)) {
-            if(StringUtils.isNotBlank(urlParam)) {
+        if (StringUtils.isNotBlank(catalog3Id)) {
+            if (StringUtils.isNotBlank(urlParam)) {
                 urlParam = urlParam + "&";
             }
             urlParam = urlParam + "catalog3Id=" + catalog3Id;
         }
 
-        if(valueId != null && valueId.length > 0) {
+        if (valueId != null && valueId.length > 0) {
             for (String id : valueId) {
                 // 当数组为空时不等于null，等于0
-                if(idDel == null || idDel.length == 0) {
-                    urlParam = urlParam + "&" + "valueId=" + id;
-                }else {
-                    if(!idDel[0].equals(id)) {
-                        urlParam = urlParam + "&" + "valueId=" + id;
+                if (idDel == null || idDel.length == 0) {
+                    urlParam = urlParam + "&valueId=" + id;
+                } else {
+                    if (!id.equals(idDel[0])) {
+                        urlParam = urlParam + "&valueId=" + id;
                     }
                 }
             }

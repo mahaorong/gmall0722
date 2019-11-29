@@ -41,7 +41,7 @@ public class GmallSearchServiceApplicationTests {
         searchSourceBuilder.from(0);
 
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-        MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("skuName","小米");
+        MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("skuName", "小米");
         boolQueryBuilder.must(matchQueryBuilder);
 
         searchSourceBuilder.query(boolQueryBuilder);
@@ -73,7 +73,7 @@ public class GmallSearchServiceApplicationTests {
 
             pmsSearchSkuInfo.setId(Long.parseLong(pmsSkuInfo.getId()));
 
-            Index index = new Index.Builder(pmsSearchSkuInfo).index("pmsskuinfo").type("pmsSearchSkuInfo").id(pmsSearchSkuInfo.getId()+"").build();
+            Index index = new Index.Builder(pmsSearchSkuInfo).index("pmsskuinfo").type("pmsSearchSkuInfo").id(pmsSearchSkuInfo.getId() + "").build();
             jestClient.execute(index);
         }
     }

@@ -2,6 +2,7 @@ package com.atguigu.gmall.cart.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.atguigu.gmall.annotations.LoginRequired;
 import com.atguigu.gmall.bean.OmsCartItem;
 import com.atguigu.gmall.bean.PmsSkuInfo;
 import com.atguigu.gmall.service.CartService;
@@ -31,17 +32,18 @@ public class CartController {
     CartService cartService;
 
     @RequestMapping("/checkCart")
+    @LoginRequired(isNeededSuccess = false)
     public String checkCart(HttpServletRequest request, ModelMap modelMap, String isChecked, String skuId) {
         String memberId = "1";
 
         List<OmsCartItem> omsCartItems = new ArrayList<>();
-        if(StringUtils.isBlank(memberId)) {
+        if (StringUtils.isBlank(memberId)) {
             // 用户没登陆
             String cartListCookieStr = CookieUtil.getCookieValue(request, "cartListCookie", true);
-            if(StringUtils.isNotBlank(cartListCookieStr)) {
+            if (StringUtils.isNotBlank(cartListCookieStr)) {
                 omsCartItems = JSON.parseArray(cartListCookieStr, OmsCartItem.class);
             }
-        }else {
+        } else {
             // 用户登录了
             cartService.checkCart(memberId, isChecked, skuId);
             omsCartItems = cartService.getCartListFromCache(memberId);
@@ -52,17 +54,19 @@ public class CartController {
         modelMap.put("totalAmout", totalAmout);
         return "cartListInner";
     }
+
     @RequestMapping("/cartList")
+    @LoginRequired(isNeededSuccess = false)
     public String cartList(HttpServletRequest request, ModelMap modelMap) {
         String memberId = "1";
         List<OmsCartItem> omsCartItems = new ArrayList<>();
-        if(StringUtils.isBlank(memberId)) {
+        if (StringUtils.isBlank(memberId)) {
             // 用户没登陆
             String cartListCookieStr = CookieUtil.getCookieValue(request, "cartListCookie", true);
-            if(StringUtils.isNotBlank(cartListCookieStr)) {
+            if (StringUtils.isNotBlank(cartListCookieStr)) {
                 omsCartItems = JSON.parseArray(cartListCookieStr, OmsCartItem.class);
             }
-        }else {
+        } else {
             // 用户登录了
             omsCartItems = cartService.getCartListFromCache(memberId);
         }
@@ -76,10 +80,10 @@ public class CartController {
     private BigDecimal getTotalAmout(List<OmsCartItem> omsCartItems) {
 
         BigDecimal bigDecimal = new BigDecimal("0");
-        if(omsCartItems != null && omsCartItems.size() > 0) {
+        if (omsCartItems != null && omsCartItems.size() > 0) {
             for (OmsCartItem omsCartItem : omsCartItems) {
                 if (omsCartItem.getIsChecked().equals("1")) {
-                   bigDecimal = bigDecimal.add(omsCartItem.getTotalPrice());
+                    bigDecimal = bigDecimal.add(omsCartItem.getTotalPrice());
                 }
             }
         }
@@ -88,6 +92,7 @@ public class CartController {
     }
 
     @RequestMapping("/addToCart")
+    @LoginRequired(isNeededSuccess = false)
     public String addToCart(OmsCartItem omsCartItem, HttpServletRequest request, HttpServletResponse response) {
         // 商品数量
         BigDecimal quantity = omsCartItem.getQuantity();
@@ -112,7 +117,7 @@ public class CartController {
         // 判断用户是否登录
         String memberId = "1";
 
-        if(StringUtils.isBlank(memberId)) {
+        if (StringUtils.isBlank(memberId)) {
             /*// 创建购物车集合
             List<OmsCartItem> omsCartItems = null;
             // 用户未登录
@@ -134,21 +139,21 @@ public class CartController {
             cookie.setMaxAge(10);
             response.addCookie(cookie);*/
             String cartListCookieStr = CookieUtil.getCookieValue(request, "cartListCookie", true);
-            if(StringUtils.isBlank(cartListCookieStr)) {
+            if (StringUtils.isBlank(cartListCookieStr)) {
                 // 购物车为空
                 omsCartItems.add(omsCartItem1);
-            }else {
+            } else {
                 // 判断是否重复
                 // 购物车里面数据
                 omsCartItems = JSON.parseArray(cartListCookieStr, OmsCartItem.class);
 
                 boolean b = if_new_cart(omsCartItems, omsCartItem);
-                if(b) {
+                if (b) {
                     omsCartItems.add(omsCartItem1);
-                }else {
+                } else {
                     // 更新
                     for (OmsCartItem cartItem : omsCartItems) {
-                        if(cartItem.getProductSkuId().equals(omsCartItem.getProductSkuId())) {
+                        if (cartItem.getProductSkuId().equals(omsCartItem.getProductSkuId())) {
                             cartItem.setQuantity(cartItem.getQuantity().add(omsCartItem.getQuantity()));
                             cartItem.setTotalPrice(omsCartItem1.getPrice().multiply(cartItem.getQuantity()));
                         }
@@ -156,15 +161,15 @@ public class CartController {
                 }
             }
             // 覆盖cookie购物车里的数据
-            CookieUtil.setCookie(request, response, "cartListCookie", JSON.toJSONString(omsCartItems), 1000*60*30, true);
-        }else {
+            CookieUtil.setCookie(request, response, "cartListCookie", JSON.toJSONString(omsCartItems), 1000 * 60 * 30, true);
+        } else {
             // 用户已登录
             // 查询数据库没有sku数据
             OmsCartItem omsCartItemFromDb = cartService.isCartExists(omsCartItem1);
-            if(omsCartItemFromDb == null) {
+            if (omsCartItemFromDb == null) {
                 omsCartItem1.setMemberId(memberId);
                 cartService.addCart(omsCartItem1);
-            }else {
+            } else {
                 omsCartItemFromDb.setQuantity(omsCartItemFromDb.getQuantity().add(omsCartItem1.getQuantity()));
                 omsCartItemFromDb.setTotalPrice(omsCartItemFromDb.getPrice().multiply(omsCartItemFromDb.getQuantity()));
                 cartService.updateCart(omsCartItemFromDb);
@@ -177,7 +182,7 @@ public class CartController {
     private boolean if_new_cart(List<OmsCartItem> omsCartItems, OmsCartItem omsCartItem) {
         boolean b = true;
         for (OmsCartItem cartItem : omsCartItems) {
-            if(cartItem.getProductSkuId().equals(omsCartItem.getProductSkuId())) {
+            if (cartItem.getProductSkuId().equals(omsCartItem.getProductSkuId())) {
                 b = false;
             }
         }

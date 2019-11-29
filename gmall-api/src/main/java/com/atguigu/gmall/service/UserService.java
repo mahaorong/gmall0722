@@ -9,4 +9,8 @@ public interface UserService {
     List<UmsMember> getAllUser();
 
     UmsMember getUser(String memeberId);
+
+    UmsMember login(UmsMember umsMember);
+
+    UmsMember addUser(UmsMember umsMember);
 }

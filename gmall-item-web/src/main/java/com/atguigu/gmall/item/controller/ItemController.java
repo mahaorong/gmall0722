@@ -55,7 +55,7 @@ public class ItemController {
 
         modelMap.put("hashMapStr", hashMapStr);
 
-        List<PmsProductSaleAttr> pmsProductSaleAttrs =  spuService.getSpuSaleAttrListCheckBySku(spuId, pmsSkuInfo.getId());
+        List<PmsProductSaleAttr> pmsProductSaleAttrs = spuService.getSpuSaleAttrListCheckBySku(spuId, pmsSkuInfo.getId());
 
         modelMap.put("skuInfo", pmsSkuInfo);
         modelMap.put("spuSaleAttrListCheckBySku", pmsProductSaleAttrs);

@@ -14,7 +14,7 @@ public class MyFileUploadUtil {
     // 上传图片
     public static String uploadImage(MultipartFile multipartFile) {
         String url = "http://192.168.147.110";
-        
+
         String path = MyFileUploadUtil.class.getClassLoader().getResource("tracker.conf").getPath();
 
         try {
@@ -38,14 +38,14 @@ public class MyFileUploadUtil {
 
         // tracker返回一个storage
         StorageClient storageClient = new StorageClient(connection, null);
-        
+
         try {
             String originalFilename = multipartFile.getOriginalFilename();
             int i = originalFilename.lastIndexOf(".");
             String extName = originalFilename.substring(i);
             // 上传文件
             String[] strs = storageClient.upload_file(multipartFile.getBytes(), extName, null);
-            
+
             // 返回上传数据的元数据信息
             for (String str : strs) {
                 url = url + "/" + str;
@@ -56,7 +56,7 @@ public class MyFileUploadUtil {
             e.printStackTrace();
         }
 
-        
+
         return url;
     }
 }

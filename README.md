@@ -13,3 +13,7 @@ gmall-search-web 8083
 
 gmall-cart-service 8074 cart.gmall.com
 gmall-cart-web 8084
+
+gmall-order-web 8086
+
+gmall-passport-web 8090

@@ -39,21 +39,21 @@ public class AttrServiceImpl implements AttrService {
     @Override
     public void saveAttrInfo(PmsBaseAttrInfo pmsBaseAttrInfo) {
         String id = pmsBaseAttrInfo.getId();
-        if(StringUtils.isNotBlank(id)) {
+        if (StringUtils.isNotBlank(id)) {
             PmsBaseAttrValue pmsBaseAttrValue = new PmsBaseAttrValue();
             pmsBaseAttrValue.setAttrId(pmsBaseAttrInfo.getId());
             List<PmsBaseAttrValue> pmsBaseAttrValues = pmsBaseAttrValueMapper.select(pmsBaseAttrValue);
             for (PmsBaseAttrValue pmsBaseAttrValue1 : pmsBaseAttrValues) {
                 pmsBaseAttrValueMapper.delete(pmsBaseAttrValue1);
             }
-        }else {
+        } else {
             pmsBaseAttrInfoMapper.insertSelective(pmsBaseAttrInfo);
         }
         String attr_id = pmsBaseAttrInfo.getId();
 
         List<PmsBaseAttrValue> attrValueList = pmsBaseAttrInfo.getAttrValueList();
 
-        for (PmsBaseAttrValue pmsBaseAttrValue: attrValueList) {
+        for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
             pmsBaseAttrValue.setAttrId(attr_id);
             pmsBaseAttrValueMapper.insertSelective(pmsBaseAttrValue);
         }

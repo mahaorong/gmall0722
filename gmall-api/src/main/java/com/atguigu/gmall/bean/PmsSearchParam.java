@@ -2,7 +2,7 @@ package com.atguigu.gmall.bean;
 
 import java.io.Serializable;
 
-public class PmsSearchParam implements Serializable{
+public class PmsSearchParam implements Serializable {
 
     private String catalog3Id;
 

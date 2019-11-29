@@ -72,7 +72,7 @@ public class CartServiceImpl implements CartService {
 
         List<String> hvals = jedis.hvals("user:" + memberId + ":cart");
 
-        if(hvals != null && hvals.size() > 0) {
+        if (hvals != null && hvals.size() > 0) {
             for (String hval : hvals) {
                 OmsCartItem omsCartItem = JSON.parseObject(hval, OmsCartItem.class);
                 omsCartItems.add(omsCartItem);
@@ -96,7 +96,7 @@ public class CartServiceImpl implements CartService {
         jedis = redisUtil.getJedis();
 
         String hget = jedis.hget("user:" + memberId + ":cart", skuId);
-        if(StringUtils.isNotBlank(hget)) {
+        if (StringUtils.isNotBlank(hget)) {
             OmsCartItem omsCartItem1 = JSON.parseObject(hget, OmsCartItem.class);
             omsCartItem1.setIsChecked(isChecked);
             jedis.hset("user:" + memberId + ":cart", skuId, JSON.toJSONString(omsCartItem1));

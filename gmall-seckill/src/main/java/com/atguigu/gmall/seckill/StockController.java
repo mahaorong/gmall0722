@@ -35,17 +35,17 @@ public class StockController {
             BigDecimal stock = new BigDecimal(jedis.get("stock"));
 
             int i = stock.compareTo(new BigDecimal("0"));// -1 0 1
-            if(i > 0) {
+            if (i > 0) {
 
                 restStock = jedis.incrBy("stock", -1);
 
                 System.out.println("售出一件商品，剩余库存数量" + restStock);
-            }else {
+            } else {
                 restStock = 0;
                 System.out.println("商品售罄");
             }
 
-        }finally {
+        } finally {
             rLock.unlock();
             jedis.close();
         }

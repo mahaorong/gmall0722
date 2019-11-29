@@ -43,7 +43,7 @@ public class SpuController {
 
     @ResponseBody
     @RequestMapping("baseSaleAttrList")
-    public List<PmsBaseSaleAttr> baseSaleAttrList(){
+    public List<PmsBaseSaleAttr> baseSaleAttrList() {
 
         List<PmsBaseSaleAttr> pmsBaseSaleAttrs = spuService.baseSaleAttrList();
 

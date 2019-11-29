@@ -3,7 +3,9 @@ package com.atguigu.gmall.user.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.atguigu.gmall.bean.UmsMember;
+import com.atguigu.gmall.bean.UmsMemberReceiveAddress;
 import com.atguigu.gmall.service.UserService;
+import com.atguigu.gmall.user.mapper.UmsMemberReceiveAddressMapper;
 import com.atguigu.gmall.user.mapper.UserMemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,6 +16,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMemberMapper userMemberMapper;
+
+    @Autowired
+    private UmsMemberReceiveAddressMapper umsMemberReceiveAddressMapper;
 
     @Override
     public List<UmsMember> getAllUser() {
@@ -39,5 +44,15 @@ public class UserServiceImpl implements UserService {
     public UmsMember addUser(UmsMember umsMember) {
         userMemberMapper.insertSelective(umsMember);
         return umsMember;
+    }
+
+    @Override
+    public List<UmsMemberReceiveAddress> getReceiveAddressByMemberId(String memberId) {
+
+        UmsMemberReceiveAddress umsMemberReceiveAddress = new UmsMemberReceiveAddress();
+        umsMemberReceiveAddress.setMemberId(memberId);
+        List<UmsMemberReceiveAddress> umsMemberReceiveAddresses = umsMemberReceiveAddressMapper.select(umsMemberReceiveAddress);
+
+        return umsMemberReceiveAddresses;
     }
 }

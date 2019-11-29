@@ -34,7 +34,7 @@ public class CartController {
     @RequestMapping("/checkCart")
     @LoginRequired(isNeededSuccess = false)
     public String checkCart(HttpServletRequest request, ModelMap modelMap, String isChecked, String skuId) {
-        String memberId = "1";
+        String memberId = (String) request.getAttribute("memberId");
 
         List<OmsCartItem> omsCartItems = new ArrayList<>();
         if (StringUtils.isBlank(memberId)) {
@@ -58,7 +58,7 @@ public class CartController {
     @RequestMapping("/cartList")
     @LoginRequired(isNeededSuccess = false)
     public String cartList(HttpServletRequest request, ModelMap modelMap) {
-        String memberId = "1";
+        String memberId = (String) request.getAttribute("memberId");
         List<OmsCartItem> omsCartItems = new ArrayList<>();
         if (StringUtils.isBlank(memberId)) {
             // 用户没登陆
@@ -87,7 +87,6 @@ public class CartController {
                 }
             }
         }
-
         return bigDecimal;
     }
 
@@ -115,7 +114,7 @@ public class CartController {
         List<OmsCartItem> omsCartItems = new ArrayList<>();
 
         // 判断用户是否登录
-        String memberId = "1";
+        String memberId = (String) request.getAttribute("memberId");
 
         if (StringUtils.isBlank(memberId)) {
             /*// 创建购物车集合

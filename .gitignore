@@ -7,6 +7,4 @@
 *.iml
 out
 gen
-fastdfs-client-java/
-gmall-api/target/
-gmall-service-util/target/
+

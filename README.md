@@ -14,6 +14,9 @@ gmall-search-web 8083
 gmall-cart-service 8074 cart.gmall.com
 gmall-cart-web 8084
 
+gmall-order-service 8076 order.gmall.com
 gmall-order-web 8086
 
-gmall-passport-web 8090
+gmall-passport-web 8090 passport.gmall.com
+
+gmall-payment 8088 payment.gmall.com

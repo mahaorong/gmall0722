@@ -1,5 +1,6 @@
 package com.atguigu.gmall.service;
 
+import com.atguigu.gmall.bean.OmsCartItem;
 import com.atguigu.gmall.bean.PmsSkuInfo;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface SkuService {
     List<PmsSkuInfo> getAllSku();
 
     PmsSkuInfo getSkuById(String skuId);
+
+    boolean checkPrice(OmsCartItem omsCartItem);
 }

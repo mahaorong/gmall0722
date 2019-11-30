@@ -15,4 +15,6 @@ public interface CartService {
     List<OmsCartItem> getCartListFromCache(String memberId);
 
     void checkCart(String memberId, String isChecked, String skuId);
+
+    void removeCart(List<OmsCartItem> cartListFromCache);
 }

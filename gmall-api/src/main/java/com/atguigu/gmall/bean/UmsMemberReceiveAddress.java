@@ -2,6 +2,7 @@ package com.atguigu.gmall.bean;
 
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class UmsMemberReceiveAddress implements Serializable {
 
@@ -10,7 +11,7 @@ public class UmsMemberReceiveAddress implements Serializable {
     private String memberId;
     private String  name;
     private String  phoneNumber;
-    private int defaultStatus;
+    private BigDecimal defaultStatus;
     private String postCode;
     private String province;
     private String city;
@@ -49,11 +50,11 @@ public class UmsMemberReceiveAddress implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getDefaultStatus() {
+    public BigDecimal getDefaultStatus() {
         return defaultStatus;
     }
 
-    public void setDefaultStatus(int defaultStatus) {
+    public void setDefaultStatus(BigDecimal defaultStatus) {
         this.defaultStatus = defaultStatus;
     }
 

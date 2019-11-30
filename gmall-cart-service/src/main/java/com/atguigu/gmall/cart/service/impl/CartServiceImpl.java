@@ -103,4 +103,22 @@ public class CartServiceImpl implements CartService {
         }
         jedis.close();
     }
+
+    @Override
+    public void removeCart(List<OmsCartItem> cartListFromCache) {
+
+        Jedis jedis = null;
+
+        jedis = redisUtil.getJedis();
+
+        for (OmsCartItem omsCartItem : cartListFromCache) {
+            if(omsCartItem.getIsChecked().equals("1")) {
+                OmsCartItem omsCartItem1 = new OmsCartItem();
+                omsCartItem1.setId(omsCartItem.getId());
+                omsCartItemMapper.delete(omsCartItem1);
+                jedis.hdel("user:" + omsCartItem.getMemberId() + ":cart", omsCartItem.getProductSkuId());
+            }
+        }
+        jedis.close();
+    }
 }

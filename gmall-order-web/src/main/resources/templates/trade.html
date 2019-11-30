@@ -61,7 +61,7 @@
 			<div class="top-3">
 				<ul >
 				 <li class=".address default selected" th:each="userAddress:${userAddressList}"  >
-					 <input   name="deliveryAddress" type="radio"  value=""  th:checked="${userAddress.defaultStatus}=='1'">
+					 <input  onclick="changeAddress()" name="deliveryAddress" type="radio"  th:value="${userAddress.id}"  th:checked="${userAddress.defaultStatus}=='1'">
 					<span  th:text="${userAddress.name}" >收件人AAAA </span><span th:text="${userAddress.detailAddress}"   >具体地址111 </span>
 				 </li>
 				</ul>
@@ -114,25 +114,39 @@
 				<p class="yfze_a"><span class="z">应付总额：</span><span class="hq" th:text="'￥'+${totalAmount}" > ￥99999</span></p>
 
 
-			<button id="submitButton" class="tijiao">提交订单</button>
+			<button id="submitButton" class="tijiao" onclick="submitOrder()">提交订单</button>
 		</div>
 		</div>
 
 		<form action="./submitOrder" method="post" id="orderForm">
-			<input name="consignee" id="consignee" type="hidden"/>
-			<input name="deliveryAddress" id="deliveryAddress" type="hidden"/>
-			<input name="paymentWay" id="paymentWay" type="hidden"/>
-			<input name="orderComment" id="orderComment" type="hidden"/>
-			<span  th:each="orderDetail,stat:${orderDetailList}" >
-				<input th:name="'orderDetailList['+${stat.index}+'].skuId'" type="hidden"    th:value="${orderDetail.productSkuId}" />
-				<input th:name="'orderDetailList['+${stat.index}+'].skuNum'" type="hidden"    th:value="${orderDetail.productQuantity}" />
-				<input th:name="'orderDetailList['+${stat.index}+'].orderPrice'" type="hidden"    th:value="${orderDetail.productPrice}" />
-				<input th:name="'orderDetailList['+${stat.index}+'].skuName'" type="hidden"    th:value="${orderDetail.productName}" />
-			</span>
-			<input name="tradeCode" type="hidden"  th:value="${tradeCode}"  />
+			<input type="hidden" name="addressId" id="addressId" />
+			<input type="hidden" name="tradeCode" id="tradeCode" th:value="${tradeCode}"/>
+			<!--<input name="consignee" id="consignee" type="hidden"/>-->
+			<!--<input name="deliveryAddress" id="deliveryAddress" type="hidden"/>-->
+			<!--<input name="paymentWay" id="paymentWay" type="hidden"/>-->
+			<!--<input name="orderComment" id="orderComment" type="hidden"/>-->
+			<!--<span  th:each="orderDetail,stat:${orderDetailList}" >-->
+				<!--<input th:name="'orderDetailList['+${stat.index}+'].skuId'" type="hidden"    th:value="${orderDetail.productSkuId}" />-->
+				<!--<input th:name="'orderDetailList['+${stat.index}+'].skuNum'" type="hidden"    th:value="${orderDetail.productQuantity}" />-->
+				<!--<input th:name="'orderDetailList['+${stat.index}+'].orderPrice'" type="hidden"    th:value="${orderDetail.productPrice}" />-->
+				<!--<input th:name="'orderDetailList['+${stat.index}+'].skuName'" type="hidden"    th:value="${orderDetail.productName}" />-->
+			<!--</span>-->
+			<!--<input name="tradeCode" type="hidden"  th:value="${tradeCode}"  />-->
 		</form>
 		<script>
+
+			function submitOrder() {
+				$("#orderForm").submit();
+			}
+
+			function changeAddress() {
+				var addressId = $("input[name='deliveryAddress']:checked").val();
+				$("#addressId").val(addressId);
+			}
+
             $(function() {
+				var addressId = $("input[name='deliveryAddress']:checked").val();
+				$("#addressId").val(addressId);
 
                 $("#submitButton").click(function () {
                    $("#consignee").val($("input[type='radio']:checked").next().text()) ;

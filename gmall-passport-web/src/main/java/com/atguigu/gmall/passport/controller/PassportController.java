@@ -59,12 +59,20 @@ public class PassportController {
         umsMember.setAccess_token(map2.get("access_token"));
         umsMember.setCreate_time(new Date());
         umsMember.setAccess_code(code);
-        UmsMember umsMember1 = userService.addUser(umsMember);
+
+        UmsMember umsMemberForRequest = new UmsMember();
+        UmsMember umsMember2 = userService.isUserExists(umsMember);
+        if(umsMember2 == null) {
+            UmsMember umsMember1 = userService.addUser(umsMember);
+            umsMemberForRequest = umsMember1;
+        }else {
+            umsMemberForRequest = umsMember;
+        }
 
         // jwt， 生成token
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put("memberId", umsMember1.getId());
-        userMap.put("nickname", umsMember1.getNickname());
+        userMap.put("memberId", umsMemberForRequest.getId());
+        userMap.put("nickname", umsMemberForRequest.getNickname());
         String remoteAddr = request.getRemoteAddr();
         String token = JwtUtil.encode("gmall0722", userMap, remoteAddr);
 

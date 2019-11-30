@@ -55,4 +55,18 @@ public class UserServiceImpl implements UserService {
 
         return umsMemberReceiveAddresses;
     }
+
+    @Override
+    public UmsMemberReceiveAddress getReceiveAddressById(String addressId) {
+        UmsMemberReceiveAddress umsMemberReceiveAddress = new UmsMemberReceiveAddress();
+        umsMemberReceiveAddress.setId(addressId);
+        return umsMemberReceiveAddressMapper.selectOne(umsMemberReceiveAddress);
+    }
+
+    @Override
+    public UmsMember isUserExists(UmsMember umsMember) {
+        UmsMember umsMember1 = new UmsMember();
+        umsMember1.setId(umsMember.getId());
+        return userMemberMapper.selectOne(umsMember1);
+    }
 }

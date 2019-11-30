@@ -16,4 +16,8 @@ public interface UserService {
     UmsMember addUser(UmsMember umsMember);
 
     List<UmsMemberReceiveAddress> getReceiveAddressByMemberId(String memberId);
+
+    UmsMemberReceiveAddress getReceiveAddressById(String addressId);
+
+    UmsMember isUserExists(UmsMember umsMember);
 }

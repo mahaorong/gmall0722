@@ -1,5 +1,7 @@
 package com.atguigu.gmall.bean;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -7,6 +9,7 @@ import java.math.BigDecimal;
 public class UmsMemberReceiveAddress implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String memberId;
     private String  name;

@@ -9,6 +9,7 @@ import com.atguigu.gmall.service.OrderService;
 import com.atguigu.gmall.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
+import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -80,5 +81,19 @@ public class OrderServiceImpl implements OrderService {
         jedis.close();
 
         return uuid;
+    }
+
+    @Override
+    public OmsOrder getOrderBySn(String orderSn) {
+        OmsOrder omsOrder = new OmsOrder();
+        omsOrder.setOrderSn(orderSn);
+        return omsOrderMapper.selectOne(omsOrder);
+    }
+
+    @Override
+    public void updateOrder(OmsOrder omsOrder) {
+        Example example = new Example(OmsOrder.class);
+        example.createCriteria().andEqualTo("orderSn", omsOrder.getOrderSn());
+        omsOrderMapper.updateByExampleSelective(omsOrder, example);
     }
 }

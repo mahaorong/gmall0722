@@ -9,4 +9,8 @@ public interface OrderService {
     boolean checkTradeCode(String memberId, String tradeCode);
 
     String getTradeCode(String memberId);
+
+    OmsOrder getOrderBySn(String orderSn);
+
+    void updateOrder(OmsOrder omsOrder);
 }

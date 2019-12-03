@@ -63,7 +63,8 @@
     </div>
 
     <form    method="post" id="paymentForm">
-
+         <input type="hidden" name="orderSn" th:value="${orderSn}" >
+         <input type="hidden" name="totalAmount" th:value="${totalAmount}" >
          <input type="hidden" name="orderId" th:value="${orderId}" >
     </form>
 

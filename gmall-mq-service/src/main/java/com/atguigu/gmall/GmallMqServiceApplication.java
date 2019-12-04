@@ -1,13 +1,13 @@
-package com.atguigu.gmall.passport;
+package com.atguigu.gmall;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GmallPassportWebApplication {
+public class GmallMqServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GmallPassportWebApplication.class, args);
+        SpringApplication.run(GmallMqServiceApplication.class, args);
     }
 
 }

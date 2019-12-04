@@ -4,8 +4,10 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.gmall.bean.OmsCartItem;
+import com.atguigu.gmall.bean.OmsOrderItem;
 import com.atguigu.gmall.cart.mapper.OmsCartItemMapper;
 import com.atguigu.gmall.service.CartService;
+import com.atguigu.gmall.utils.CookieUtil;
 import com.atguigu.gmall.utils.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import redis.clients.jedis.Jedis;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -118,6 +121,46 @@ public class CartServiceImpl implements CartService {
                 omsCartItemMapper.delete(omsCartItem1);
                 jedis.hdel("user:" + omsCartItem.getMemberId() + ":cart", omsCartItem.getProductSkuId());
             }
+        }
+        jedis.close();
+    }
+
+    @Override
+    public void mergCart(String memberId, String cartListStr) {
+        List<OmsCartItem> omsCartItems = new ArrayList<>();
+        List<OmsCartItem> omsCartItemsList = JSON.parseArray(cartListStr, OmsCartItem.class);
+
+        Jedis jedis = null;
+
+        jedis = redisUtil.getJedis();
+
+        List<OmsCartItem> omsCartItems1 = omsCartItemMapper.selectAll();
+        if(omsCartItems1 != null) {
+            for (OmsCartItem omsCartItem : omsCartItems1) {
+                if(omsCartItemsList != null) {
+                    Iterator<OmsCartItem> iterator = omsCartItemsList.iterator();
+                    while (iterator.hasNext()) {
+                        OmsCartItem omsCartItem1 = iterator.next();
+                        if (omsCartItem.getMemberId().equals(memberId) && omsCartItem.getProductSkuId().equals(omsCartItem1.getProductSkuId())) {
+                            omsCartItem.setQuantity(omsCartItem.getQuantity().add(omsCartItem1.getQuantity()));
+                            Example example = new Example(OmsCartItem.class);
+                            example.createCriteria().andEqualTo("memberId", omsCartItem.getMemberId()).andEqualTo("productSkuId", omsCartItem.getProductSkuId());
+                            omsCartItemMapper.updateByExampleSelective(omsCartItem, example);
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+        }
+        if(omsCartItemsList != null) {
+            for (OmsCartItem omsCartItem : omsCartItemsList) {
+                omsCartItem.setMemberId(memberId);
+                omsCartItemMapper.insertSelective(omsCartItem);
+                omsCartItems1.add(omsCartItem);
+            }
+        }
+        for (OmsCartItem omsCartItem : omsCartItems1) {
+            jedis.hset("user:" + memberId + ":cart", omsCartItem.getProductSkuId(), JSON.toJSONString(omsCartItem));
         }
         jedis.close();
     }

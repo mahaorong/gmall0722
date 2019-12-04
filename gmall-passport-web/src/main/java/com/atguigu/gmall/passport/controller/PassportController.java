@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.bean.UmsMember;
 import com.atguigu.gmall.passport.utils.JwtUtil;
 import com.atguigu.gmall.service.UserService;
+import com.atguigu.gmall.utils.CookieUtil;
 import com.atguigu.gmall.utils.HttpclientUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -87,12 +88,11 @@ public class PassportController {
         Map<String, Object> gmall0722 = JwtUtil.decode(token, "gmall0722", currentIp);
 
         // 调用用户缓存服务，核对token
-
         HashMap<String, Object> map = new HashMap<>();
-       if(gmall0722 != null) {
+        if(gmall0722 != null) {
            map.put("memberId", gmall0722.get("memberId"));
            map.put("nickname", gmall0722.get("nickname"));
-       }
+        }
 
         return JSON.toJSONString(map);
     }
@@ -102,7 +102,8 @@ public class PassportController {
     public String login(HttpServletRequest request, UmsMember umsMember) {
 
         // 判断用户名密码是否正确
-        UmsMember umsMemberFromDb = userService.login(umsMember);
+        String cartListStr = CookieUtil.getCookieValue(request, "cartListCookie", true);
+        UmsMember umsMemberFromDb = userService.login(umsMember, cartListStr);
 
         if(umsMemberFromDb != null) {
             // 调用用户服务，将token存入缓存服务器

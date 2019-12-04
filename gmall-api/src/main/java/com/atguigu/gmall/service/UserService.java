@@ -11,7 +11,7 @@ public interface UserService {
 
     UmsMember getUser(String memeberId);
 
-    UmsMember login(UmsMember umsMember);
+    UmsMember login(UmsMember umsMember, String cartListStr);
 
     UmsMember addUser(UmsMember umsMember);
 

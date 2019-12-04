@@ -7,8 +7,12 @@ import com.atguigu.gmall.bean.UmsMemberReceiveAddress;
 import com.atguigu.gmall.service.UserService;
 import com.atguigu.gmall.user.mapper.UmsMemberReceiveAddressMapper;
 import com.atguigu.gmall.user.mapper.UserMemberMapper;
+import com.atguigu.gmall.utils.ActiveMQUtil;
+import org.apache.activemq.command.ActiveMQMapMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.jms.*;
 import java.util.List;
 
 @Service
@@ -19,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UmsMemberReceiveAddressMapper umsMemberReceiveAddressMapper;
+
+    @Autowired
+    ActiveMQUtil activeMQUtil;
 
     @Override
     public List<UmsMember> getAllUser() {
@@ -33,11 +40,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UmsMember login(UmsMember umsMember) {
+    public UmsMember login(UmsMember umsMember, String cartListStr) {
         UmsMember umsMember1 = new UmsMember();
         umsMember1.setUsername(umsMember.getUsername());
         umsMember1.setPassword(umsMember.getPassword());
-        return userMemberMapper.selectOne(umsMember1);
+        UmsMember umsMember2 = userMemberMapper.selectOne(umsMember1);
+
+        if(umsMember2 != null) {
+            // 发送消息队列通知，其他业务服务，如购物车，站内信，短信，邮件，日志等
+            if(StringUtils.isNotBlank(cartListStr)) {
+                sendCartLogin(umsMember2, cartListStr);
+            }
+        }
+
+        return umsMember2;
+    }
+
+    private void sendCartLogin(UmsMember umsMember, String cartListStr) {
+        ConnectionFactory connect = activeMQUtil.getConnectionFactory();
+        try {
+            Connection connection = connect.createConnection();
+            connection.start();
+            Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = session.createQueue("CART_LOGIN");
+
+            MessageProducer producer = session.createProducer(queue);
+
+//            ActiveMQTextMessage message = new ActiveMQTextMessage();
+//            message.setText("支付完成，修改订单信息");
+
+            ActiveMQMapMessage mapMessage = new ActiveMQMapMessage();
+            mapMessage.setString("memberId", umsMember.getId());
+            mapMessage.setString("cartListStr", cartListStr);
+
+            producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+            producer.send(mapMessage);
+            session.commit();
+            connection.close();
+        }catch (JMSException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

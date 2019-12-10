@@ -69,7 +69,13 @@ public class SpuServiceImpl implements SpuService {
     }
 
     @Override
-    public List<PmsProductSaleAttr> spuSaleAttrList(String spuId) {
+    public List<PmsProductSaleAttr> spuSaleAttrList(String spuId, String key) {
+//        if (!DynamicDataSourceContextHolder.containDataSourceKey(key)) {
+//            System.out.println("数据源 [{}] 不存在, 使用默认数据源 [{}] " + key);
+//        } else {
+//            // 切换数据源
+//            DynamicDataSourceContextHolder.setDataSourceKey(key);
+//        }
         PmsProductSaleAttr pmsProductSaleAttr = new PmsProductSaleAttr();
         pmsProductSaleAttr.setProductId(spuId);
         List<PmsProductSaleAttr> pmsProductSaleAttrs = pmsProductSaleAttrMapper.select(pmsProductSaleAttr);
@@ -83,7 +89,8 @@ public class SpuServiceImpl implements SpuService {
 
             productSaleAttr.setSpuSaleAttrValueList(pmsProductSaleAttrValues);
         }
-
+//        DynamicDataSourceContextHolder.clearDataSourceKey();
+//        System.out.println("移除数据源 [" + DynamicDataSourceContextHolder.getDataSourceKey());
         return pmsProductSaleAttrs;
     }
 

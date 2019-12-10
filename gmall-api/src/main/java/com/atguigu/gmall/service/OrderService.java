@@ -13,4 +13,8 @@ public interface OrderService {
     OmsOrder getOrderBySn(String orderSn);
 
     void updateOrder(OmsOrder omsOrder);
+
+    void sendOrderSuccessQueue(OmsOrder omsOrder);
+
+    void updateOrderById(OmsOrder omsOrder);
 }

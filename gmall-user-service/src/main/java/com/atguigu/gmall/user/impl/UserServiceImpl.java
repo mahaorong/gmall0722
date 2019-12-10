@@ -1,6 +1,5 @@
 package com.atguigu.gmall.user.impl;
 
-
 import com.alibaba.dubbo.config.annotation.Service;
 import com.atguigu.gmall.bean.UmsMember;
 import com.atguigu.gmall.bean.UmsMemberReceiveAddress;
@@ -108,7 +107,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UmsMember isUserExists(UmsMember umsMember) {
         UmsMember umsMember1 = new UmsMember();
-        umsMember1.setId(umsMember.getId());
+        umsMember1.setNickname(umsMember.getNickname());
         return userMemberMapper.selectOne(umsMember1);
     }
 }

@@ -16,6 +16,22 @@ public class OrderMqConsumer {
     @Autowired
     OrderService orderService;
 
+    @JmsListener(containerFactory = "jmsQueueListener", destination = "SKU_DEDUCT_QUEUE")
+    public void consumerSkuDeduct(MapMessage mapMessage) throws JMSException {
+        // 获得外部订单号（订单号）
+        String orderId = mapMessage.getString("orderId");
+
+        // 更新订单信息，更新为商品已出库
+        OmsOrder omsOrder = new OmsOrder();
+        omsOrder.setId(orderId);
+        omsOrder.setStatus("2");
+        omsOrder.setDeliveryCompany("硅谷物流");
+        omsOrder.setDeliverySn("111111");
+        omsOrder.setDeliveryTime(new Date());
+
+        orderService.updateOrderById(omsOrder);
+    }
+
     @JmsListener(containerFactory = "jmsQueueListener", destination = "PAYMENT_SUCCESS_QUEUE")
     public void consumerPaymentSuccess(MapMessage mapMessage) throws JMSException {
 
@@ -30,6 +46,6 @@ public class OrderMqConsumer {
         orderService.updateOrder(omsOrder);
 
         // 发出库存消息队列（锁定订单中涉及到的商品的库存）
-        System.out.println(out_trade_no);
+        orderService.sendOrderSuccessQueue(omsOrder);
     }
 }

@@ -23,11 +23,12 @@ public class SpuController {
     @RequestMapping("/spuSaleAttrList")
     @ResponseBody
     public List<PmsProductSaleAttr> spuSaleAttrList(String spuId) {
-        List<PmsProductSaleAttr> pmsProductSaleAttrList = spuService.spuSaleAttrList(spuId);
+        String key = "master";
+        List<PmsProductSaleAttr> pmsProductSaleAttrList = spuService.spuSaleAttrList(spuId, key);
         return pmsProductSaleAttrList;
     }
 
-    @RequestMapping("/spuImageList")
+    @RequestMapping("/slave")
     @ResponseBody
     public List<PmsProductImage> spuImageList(String spuId) {
         List<PmsProductImage> pmsProductImages = spuService.spuImageList(spuId);

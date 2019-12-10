@@ -15,7 +15,7 @@ public interface SpuService {
 
     List<PmsBaseSaleAttr> baseSaleAttrList();
 
-    List<PmsProductSaleAttr> spuSaleAttrList(String spuId);
+    List<PmsProductSaleAttr> spuSaleAttrList(String spuId, String key);
 
     List<PmsProductImage> spuImageList(String spuId);
 

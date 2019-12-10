@@ -83,7 +83,7 @@ public class CartController {
         if (omsCartItems != null && omsCartItems.size() > 0) {
             for (OmsCartItem omsCartItem : omsCartItems) {
                 if (omsCartItem.getIsChecked().equals("1")) {
-                    bigDecimal = bigDecimal.add(omsCartItem.getTotalPrice());
+                    bigDecimal = bigDecimal.add(omsCartItem.getQuantity().multiply(omsCartItem.getPrice()));
                 }
             }
         }

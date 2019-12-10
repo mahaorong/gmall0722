@@ -19,6 +19,11 @@ public class ActiveMQConfig {
     @Value("${activemq.listener.enable:disabled}")
     String listenerEnable;
 
+    /***
+     * 消息发送端连接池
+     * @return
+     * @throws JMSException
+     */
     @Bean
     public ActiveMQUtil getActiveMQUtil() throws JMSException {
         if(brokerURL.equals("disabled")){
@@ -29,6 +34,11 @@ public class ActiveMQConfig {
         return  activeMQUtil;
     }
 
+    /***
+     * 消息消费端连接池
+     * @param activeMQConnectionFactory
+     * @return
+     */
     //定义一个消息监听器连接工厂，这里定义的是点对点模式的监听器连接工厂
     @Bean(name = "jmsQueueListener")
     public DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory(ActiveMQConnectionFactory activeMQConnectionFactory ) {

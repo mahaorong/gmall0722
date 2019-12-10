@@ -1,10 +1,6 @@
-package com.atguigu.gmall.annotation;
+package com.atguigu.gmall.manager.annotatins;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * 动态数据源注解

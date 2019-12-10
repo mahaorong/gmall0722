@@ -109,40 +109,40 @@ public class OrderController {
     @LoginRequired
     public String toTrade(HttpServletRequest request, ModelMap modelMap) {
 
-//        String memberId = (String) request.getAttribute("memberId");
-//
-//        // 购物车列表
-//        List<OmsCartItem> cartListFromCache = cartService.getCartListFromCache(memberId);
-//
-//        // 收获地址列表
-//        List<UmsMemberReceiveAddress> umsMemberReceiveAddresses = userService.getReceiveAddressByMemberId(memberId);
-//
-//        ArrayList<OmsOrderItem> omsOrderItems = new ArrayList<>();
-//
-//        for (OmsCartItem omsCartItem : cartListFromCache) {
-//            OmsOrderItem omsOrderItem = new OmsOrderItem();
-//            String orderSn = "gmall0722";
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-//            String format = sdf.format(new Date());
-//            orderSn = orderSn + format + System.currentTimeMillis();
-//            omsOrderItem.setOrderSn(orderSn);
-//            omsOrderItem.setProductId(omsCartItem.getProductId());
-//            omsOrderItem.setProductSkuId(omsCartItem.getProductSkuId());
-//            omsOrderItem.setProductCategoryId(omsCartItem.getProductCategoryId());
-//            omsOrderItem.setProductName(omsCartItem.getProductName());
-//            omsOrderItem.setProductPic(omsCartItem.getProductPic());
-//            omsOrderItem.setProductPrice(omsCartItem.getPrice());
-//            omsOrderItem.setProductQuantity(omsCartItem.getQuantity());
-//
-//            omsOrderItems.add(omsOrderItem);
-//        }
-//        modelMap.put("orderDetailList", omsOrderItems);
-//        modelMap.put("userAddressList", umsMemberReceiveAddresses);
-//        modelMap.put("totalAmount", getTotalAmout(cartListFromCache));
-//
-//        // 生成tradeCode校验码，写入结算页
-//        String tradeCode = orderService.getTradeCode(memberId);
-//        modelMap.put("tradeCode", tradeCode);
+        String memberId = (String) request.getAttribute("memberId");
+
+        // 购物车列表
+        List<OmsCartItem> cartListFromCache = cartService.getCartListFromCache(memberId);
+
+        // 收获地址列表
+        List<UmsMemberReceiveAddress> umsMemberReceiveAddresses = userService.getReceiveAddressByMemberId(memberId);
+
+        List<OmsOrderItem> omsOrderItems = new ArrayList<>();
+
+        for (OmsCartItem omsCartItem : cartListFromCache) {
+            OmsOrderItem omsOrderItem = new OmsOrderItem();
+            String orderSn = "gmall0722";
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            String format = sdf.format(new Date());
+            orderSn = orderSn + format + System.currentTimeMillis();
+            omsOrderItem.setOrderSn(orderSn);
+            omsOrderItem.setProductId(omsCartItem.getProductId());
+            omsOrderItem.setProductSkuId(omsCartItem.getProductSkuId());
+            omsOrderItem.setProductCategoryId(omsCartItem.getProductCategoryId());
+            omsOrderItem.setProductName(omsCartItem.getProductName());
+            omsOrderItem.setProductPic(omsCartItem.getProductPic());
+            omsOrderItem.setProductPrice(omsCartItem.getPrice());
+            omsOrderItem.setProductQuantity(omsCartItem.getQuantity());
+
+            omsOrderItems.add(omsOrderItem);
+        }
+        modelMap.put("orderDetailList", omsOrderItems);
+        modelMap.put("userAddressList", umsMemberReceiveAddresses);
+        modelMap.put("totalAmount", getTotalAmout(cartListFromCache));
+
+        // 生成tradeCode校验码，写入结算页
+        String tradeCode = orderService.getTradeCode(memberId);
+        modelMap.put("tradeCode", tradeCode);
         return "trade";
     }
 
@@ -152,7 +152,7 @@ public class OrderController {
         if (omsCartItems != null && omsCartItems.size() > 0) {
             for (OmsCartItem omsCartItem : omsCartItems) {
                 if (omsCartItem.getIsChecked().equals("1")) {
-                    bigDecimal = bigDecimal.add(omsCartItem.getTotalPrice());
+                    bigDecimal = bigDecimal.add(omsCartItem.getQuantity().multiply(omsCartItem.getPrice()));
                 }
             }
         }

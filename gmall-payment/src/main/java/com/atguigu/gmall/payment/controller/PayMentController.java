@@ -37,25 +37,30 @@ public class PayMentController {
 
     @LoginRequired
     @RequestMapping("/alipay/callback/return")
-    public String callbackReturn(HttpServletRequest request, ModelMap modelMap) {
+    public String callbackReturn(HttpServletRequest request) {
 
-        String orderSn = (String)request.getAttribute("orderSn");
+        String sign = request.getParameter("sign");
+        String out_trade_no = request.getParameter("out_trade_no");
 
-        // 调用支付系统，修改为已支付
-        PaymentInfo paymentInfo = new PaymentInfo();
-        paymentInfo.setPaymentStatus("已支付");
-        paymentInfo.setCallbackTime(new Date());
-        paymentInfo.setCallbackContent(request.getQueryString());
-        String trade_no = request.getParameter("trade_no");
-        paymentInfo.setAlipayTradeNo(trade_no);
-        paymentInfo.setOrderSn(orderSn);
-        paymentInfoService.updatePaymentInfo(paymentInfo);
-        
-        // 发送消息：调用订单系统，修改为已支付
-        paymentInfoService.sendPaymentSuccessQueue(paymentInfo);
+        String payStatus = paymentInfoService.checkPayStatus(out_trade_no);
+        if(!"已支付".equals(payStatus)) {
+            // 调用支付系统，修改为已支付
+            PaymentInfo paymentInfo = new PaymentInfo();
+            paymentInfo.setPaymentStatus("已支付");
+            paymentInfo.setCallbackTime(new Date());
+            paymentInfo.setCallbackContent(request.getQueryString());
+            String trade_no = request.getParameter("trade_no");
+            paymentInfo.setAlipayTradeNo(trade_no);
+            paymentInfo.setOrderSn(out_trade_no);
+            paymentInfoService.updatePaymentInfo(paymentInfo);
+
+            // 发送延迟消息：检查是否修改为已支付
+            paymentInfoService.sendPaymentSuccessQueue(paymentInfo);// 并行程序，异步
+        }
+
 
         // 调用库存系统，修改库存信息
-        
+
         // 调用物流系统，生成物流信息
         
         return "finish";
@@ -99,7 +104,10 @@ public class PayMentController {
         paymentInfo.setOrderId(omsOrder.getId());
         paymentInfo.setCreateTime(new Date());
         paymentInfoService.addPayment(paymentInfo);
-        
+
+        // 启动延迟任务，定时检查支付结果
+        paymentInfoService.sendPaymentSuccessCheckQueue(paymentInfo, 7);
+
         return form;
     }
 

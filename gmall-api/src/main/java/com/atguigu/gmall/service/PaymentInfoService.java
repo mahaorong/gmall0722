@@ -9,4 +9,10 @@ public interface PaymentInfoService {
     void addPayment(PaymentInfo paymentInfo);
 
     void sendPaymentSuccessQueue(PaymentInfo paymentInfo);
+
+    void sendPaymentSuccessCheckQueue(PaymentInfo paymentInfo, int count);
+
+    PaymentInfo checkPaymentStatus(PaymentInfo paymentInfo);
+
+    String checkPayStatus(String out_trade_no);
 }

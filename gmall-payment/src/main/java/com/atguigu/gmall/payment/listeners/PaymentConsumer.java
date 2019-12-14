@@ -29,10 +29,9 @@ public class PaymentConsumer {
         PaymentInfo paymentInfoResult = paymentInfoService.checkPaymentStatus(paymentInfo);
 
         // 检查失败，发送下次检查的延迟任务
-        if (paymentInfoResult.getPaymentStatus() != null && ("TRADE_SUCCESS".equals(paymentInfoResult.getPaymentStatus()) || "TRADE_SUCCESS".equals(paymentInfoResult.getPaymentStatus()))){
+        if (paymentInfoResult.getPaymentStatus() != null && ("TRADE_SUCCESS".equals(paymentInfoResult.getPaymentStatus()) || "已支付".equals(paymentInfoResult.getPaymentStatus()))){
             // 支付成功
             System.out.println("已经支付成功，更新支付信息，发送支付成功队列。。。");
-
             // 支付状态的幂等性检查
             String payStatus = paymentInfoService.checkPayStatus(out_trade_no);
             if(!"已支付".equals(payStatus)) {

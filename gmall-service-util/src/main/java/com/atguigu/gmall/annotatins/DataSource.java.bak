@@ -1,4 +1,4 @@
-package com.atguigu.gmall.manager.annotatins;
+package com.atguigu.gmall.annotatins;
 
 import java.lang.annotation.*;
 
@@ -11,11 +11,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DataSource {
-    
+
     /**
      * 数据源key值
      * @return
      */
     String value();
-    
+
 }

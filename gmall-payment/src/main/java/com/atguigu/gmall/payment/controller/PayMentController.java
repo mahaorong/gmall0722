@@ -9,8 +9,10 @@ import com.atguigu.gmall.annotations.LoginRequired;
 import com.atguigu.gmall.bean.OmsOrder;
 import com.atguigu.gmall.bean.PaymentInfo;
 import com.atguigu.gmall.payment.config.AlipayConfig;
+import com.atguigu.gmall.payment.util.HttpClient;
 import com.atguigu.gmall.service.OrderService;
 import com.atguigu.gmall.service.PaymentInfoService;
+import com.github.wxpay.sdk.WXPayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,6 +36,65 @@ public class PayMentController {
     
     @Reference
     OrderService orderService;
+
+    @ResponseBody
+    @RequestMapping("wx/submit")
+    @LoginRequired
+    public Map wxSubmit(String outTradeNo) {
+
+        // 做一个判断：支付日志中的订单支付状态 如果是已支付，则不生成二维码直接重定向到消息提示页面！
+        // 调用服务层数据
+        if(outTradeNo.length()>32){
+            outTradeNo = outTradeNo.substring(0,32);
+        }
+
+        // 第一个参数是订单Id ，第二个参数是多少钱，单位是分
+        Map map = createNative(outTradeNo + "", "1");
+        System.out.println(map.get("code_url"));
+        // data = map
+        return map;
+    }
+
+    private Map createNative(String outTradeNo, String money) {
+        // 服务号Id
+        String appid = "wxf913bfa3a2c7eeeb";
+        // 商户号Id
+        String partner = "1543338551";
+        // 密钥
+        String partnerkey = "atguigu3b0kn9g5v426MKfHQH7X8rKwb";
+        //1.创建参数
+        Map<String, String> param = new HashMap();//创建参数
+        param.put("appid", appid);//公众号
+        param.put("mch_id", partner);//商户号
+        param.put("nonce_str", WXPayUtil.generateNonceStr());//随机字符串
+        param.put("body", "尚硅谷");//商品描述
+        param.put("out_trade_no", outTradeNo);//商户订单号
+        param.put("total_fee", money);//总金额（分）
+        param.put("spbill_create_ip", "127.0.0.1");//IP
+        param.put("notify_url", "http://2z72m78296.wicp.vip/wx/callback/notify");//回调地址(随便写)
+        param.put("trade_type", "NATIVE");//交易类型
+        try {
+            //2.生成要发送的xml
+            String xmlParam = WXPayUtil.generateSignedXml(param, partnerkey);
+            System.out.println(xmlParam);
+            HttpClient client = new HttpClient("https://api.mch.weixin.qq.com/pay/unifiedorder");
+            client.setHttps(true);
+            client.setXmlParam(xmlParam);
+            client.post();
+            //3.获得结果
+            String result = client.getContent();
+            System.out.println(result);
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(result);
+            Map<String, String> map = new HashMap<>();
+            map.put("code_url", resultMap.get("code_url"));//支付地址
+            map.put("total_fee", money);//总金额
+            map.put("out_trade_no", outTradeNo);//订单号
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
 
     @LoginRequired
     @RequestMapping("/alipay/callback/return")

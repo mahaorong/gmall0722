@@ -22,7 +22,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         HandlerMethod hm = (HandlerMethod)handler;
 
         LoginRequired methodAnnotation = hm.getMethodAnnotation(LoginRequired.class);
-        // 有这个注解直接通过
+        // 没有这个注解直接通过
         if(methodAnnotation == null) {
             return true;
         }

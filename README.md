@@ -20,3 +20,9 @@ gmall-order-web 8086
 gmall-passport-web 8090 passport.gmall.com
 
 gmall-payment 8088 payment.gmall.com
+
+gmall-repair 8091
+
+gmall-manage 9001
+
+gmall-seckill 8090

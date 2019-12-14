@@ -58,11 +58,10 @@ public class OrderServiceImpl implements OrderService {
 
         //对比防重删令牌
         String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-
         Long eval = (Long) jedis.eval(script, Collections.singletonList("user:" + memberId + ":tradeCode"),
                 Collections.singletonList(tradeCode));
 
-        int i = new BigDecimal(eval).compareTo(new BigDecimal("0"));
+        int i = new BigDecimal(eval).compareTo(new BigDecimal("0")); // -1 0 1
 
         if (i != 0) {
             b=true;

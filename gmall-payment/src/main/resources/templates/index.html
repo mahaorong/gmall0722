@@ -5,7 +5,9 @@
 		<title></title>
     <link rel="stylesheet" href="css\style.css">
     <script src="js\jquery-3.1.1.min.js" charset="utf-8"></script>
-	</head>
+    <script src="umd\qrious.js" charset="utf-8"></script>
+
+    </head>
 	<body>
     <div class="One_Jdbox">
       <div class="Jdbox_head">
@@ -54,6 +56,8 @@
             </li>
             <li>
               <button id="paymentButton">立即支付</button>
+              <button id="weixin">微信支付</button><br />
+              <img id="qrious">
             </li>
           </ul>
         </div>
@@ -62,8 +66,8 @@
 
     </div>
 
-    <form    method="post" id="paymentForm">
-         <input type="hidden" name="orderSn" th:value="${orderSn}" >
+    <form method="post" id="paymentForm">
+         <input type="hidden" name="orderSn" id="orderSn" th:value="${orderSn}" >
          <input type="hidden" name="totalAmount" th:value="${totalAmount}" >
          <input type="hidden" name="orderId" th:value="${orderId}" >
     </form>
@@ -82,6 +86,17 @@
 
       })
 
+      /*点击微信支付生成二维码*/
+      $("#weixin").click(function () {
+        $.post("wx/submit",{outTradeNo:$("#orderSn").val()},function (map) {
+          alert(map.code_url);
+          var qr = window.qr = new QRious({
+            element: document.getElementById('qrious'),
+            size: 250,
+            value: map.code_url
+          })
+        })
+      });
 
 
 

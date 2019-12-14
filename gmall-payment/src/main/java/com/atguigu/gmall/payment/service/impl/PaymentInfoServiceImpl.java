@@ -83,7 +83,7 @@ public class PaymentInfoServiceImpl implements PaymentInfoService {
             ActiveMQMapMessage mapMessage = new ActiveMQMapMessage();
             mapMessage.setString("out_trade_no", paymentInfo.getOrderSn());
             mapMessage.setInt("count", count);
-            mapMessage.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, 1000 * 10); // 延迟20秒后
+            mapMessage.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, 1000 * 10); // 延迟10秒后
 
             producer.setDeliveryMode(DeliveryMode.PERSISTENT);
             producer.send(mapMessage);

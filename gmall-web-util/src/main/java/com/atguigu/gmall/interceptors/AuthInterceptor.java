@@ -19,8 +19,12 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
 
+        // 拦截代码
+        if(!(handler instanceof  HandlerMethod)) {
+            return true;
+        }
+        // 判断被拦截的请求的访问的方法的注解(是否需要被拦截)
         HandlerMethod hm = (HandlerMethod)handler;
-
         LoginRequired methodAnnotation = hm.getMethodAnnotation(LoginRequired.class);
         // 没有这个注解直接通过
         if(methodAnnotation == null) {
